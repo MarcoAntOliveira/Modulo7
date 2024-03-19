@@ -14,22 +14,34 @@
     basicstyle=\ttfamily\small,
     keywordstyle=\color{blue},
     stringstyle=\color{red},
-    commentstyle=\color{blue}\itshape,
+    commentstyle=\color{red}\itshape,
     numbers=left,
     numberstyle=\tiny\color{blue},
     breaklines=true,
     showstringspaces=false,
 }
 
+\lstdefinestyle{alteracoes_python}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{red},
+    stringstyle=\color{red},
+    commentstyle=\color{red}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{red},
+    breaklines=true,
+    showstringspaces=false,
+}
+
 % Define o estilo para HTML
-\lstdefinestyle{htmlStyle}{
-    language=HTML,
+\lstdefinestyle{djangohtml}{
+    language=python,
     basicstyle=\ttfamily\small,
     keywordstyle=\color{blue},
     stringstyle=\color{orange},
-    commentstyle=\color{gray}\itshape,
+    commentstyle=\color{blue}\itshape,
     numbers=left,
-    numberstyle=\tiny\color{red},
+    numberstyle=\tiny\color{orange},
     breaklines=true,
     showstringspaces=false,
 }
@@ -38,10 +50,10 @@
     language=HTML,
     basicstyle=\ttfamily\small,
     keywordstyle=\color{blue},
-    stringstyle=\color{green!50!black},
-    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{green},
+    commentstyle=\color{blue}\itshape,
     numbers=left,
-    numberstyle=\tiny\color{gray},
+    numberstyle=\tiny\color{green},
     breaklines=true,
     showstringspaces=false,
 }
@@ -155,7 +167,7 @@ E a mesma coisa acontece para o home
 \end{lstlisting}
 \textbf{um pasta com o nome do app, dentro da pasta templates, garante segurança na importação}
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog/blog.html}]
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -169,7 +181,7 @@ E a mesma coisa acontece para o home
 \end{lstlisting}
 
 
-\begin{lstlisting}[style= htmlStyle, caption={blog/templates/blog/example.html}]
+\begin{lstlisting}[style= djangohtml, caption={blog/templates/blog/example.html}]
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -198,7 +210,7 @@ E a mesma coisa acontece para o home
 \end{lstlisting}
 
 
-\begin{lstlisting}[style=htmlStyle, caption={home/templates/home/home.html}]
+\begin{lstlisting}[style=djangohtml, caption={home/templates/home/home.html}]
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -251,7 +263,7 @@ E a mesma coisa acontece para o home
 
 
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -265,7 +277,7 @@ E a mesma coisa acontece para o home
     </html>
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={home/views.py}]
+\begin{lstlisting}[style=djangohtml, caption={home/views.py}]
     from django.shortcuts import render
     # Create your views here.
     def home (request):#function base view
@@ -278,7 +290,7 @@ E a mesma coisa acontece para o home
 \end{lstlisting}
 extends significa extender para o html da base
 
-\begin{lstlisting}[style=htmlStyle, caption={home/templates/home.html}]
+\begin{lstlisting}[style=djangohtml, caption={home/templates/home.html}]
     {% extends "global/base.html" %}
     {% block texto %} MUDAR O texto{% endblock texto %}
 
@@ -286,7 +298,7 @@ extends significa extender para o html da base
 
 \section{configurando templates globais}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -300,25 +312,25 @@ extends significa extender para o html da base
     </html>
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={home/templates/home.html}]
+\begin{lstlisting}[style=djangohtml, caption={home/templates/home.html}]
     {% extends "global/base.html" %}
     {% block texto %} MUDAR O texto{% endblock texto %}
 \end{lstlisting}
 
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog.html}]
     {% extends "global/base.html" %}
     {% block texto %} bem vindo ao blog {% endblock texto %}
 \end{lstlisting}
 
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/example.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/example.html}]
     {% extends "global/base.html" %}
     {% block texto %} Example {% endblock texto %}
 \end{lstlisting}
 \section{Arquivos parciais e includes para separar trechos dos templates(partials)}
 \textbf{}
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/head.html}]
         <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -327,12 +339,12 @@ extends significa extender para o html da base
         <title>Document</title>
     </head>
 \end{lstlisting}
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/paragrafo.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/paragrafo.html}]
     <p> um texto qualquer </p>
 \end{lstlisting}
 
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
     {% include "global/partials/head.html" %}
     <h1> {% block texto  %} BASE {% endblock %}</h1>
     {% include "global/partials/paragrafo.html" %}
@@ -367,7 +379,7 @@ configurando o settings do project para uma nova pasta static em base
     }
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/head.html}]
     {% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -380,7 +392,7 @@ configurando o settings do project para uma nova pasta static em base
 \end{lstlisting}
 
 \section{Usando context para enviar dados para dentro do views}
-\begin{lstlisting}[style=htmlStyle, caption={home/templates/home/home.html}]
+\begin{lstlisting}[style=djangohtml, caption={home/templates/home/home.html}]
 {% extends "global/base.html" %}
 {% block texto %} 
 {{ text }}
@@ -406,12 +418,12 @@ configurando o settings do project para uma nova pasta static em base
     
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/example.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog/example.html}]
     {% extends "global/base.html" %}
     {% block texto %} {{ text }} {% endblock texto %}
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/example.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog/example.html}]
 {% extends "global/base.html" %}
 {% block texto %} {{ text }} {% endblock texto %}  
 \end{lstlisting}
@@ -440,7 +452,7 @@ def example(request):
 
 \end{lstlisting}
 \section{trabalhando com urls dinamicas}
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/menu.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/menu.html}]
     <nav> 
     <ul>
         <li>
@@ -484,7 +496,7 @@ urlpatterns = [
 \end{lstlisting}
 
 \section{Movendo todos os arquivos de css para global}
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/head.html}]
     {% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -526,7 +538,7 @@ body {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
 {% include "global/partials/head.html" %}
 {% include "global/partials/menu.html" %}
 
@@ -549,7 +561,7 @@ body {
    
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/postblock.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/postblock.html}]
     <article>
     <header>
         <h2 class="post__title">
@@ -565,7 +577,7 @@ body {
 \end{lstlisting}
 
 \section{usando block para criar blocos de posts e home }
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
     {% include "global/partials/head.html" %}
     {% include "global/partials/menu.html" %}
     
@@ -585,7 +597,7 @@ body {
     </html>
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog/blog.html}]
     {% extends "global/base.html" %}
     {% block texto %} {{text}} {% endblock texto %}
     {% block posts %}
@@ -628,7 +640,7 @@ body {
 \section{Criando os dados de posts (data.py) e usando loop for no template}
 \textbf{O codigo do data.py foi criado apartir de dados de uma api que usa json.}\\
 \textbf{O codigo foi modificado pra que apartir dos dados do data.py, gere na pagina blog, os diversos posts.}
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/postblock.htmll}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/postblock.htmll}]
     <article class="post">
     <header>
       <h2 class="post__title">Lorem ipsum dolor sit amet.{{post.title}}</h2>
@@ -637,7 +649,7 @@ body {
   </article>
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+\begin{lstlisting}[style=djangohtml, caption={blog/templates/blog/blog.html}]
 {% extends 'global/base.html' %}
 
 {% block texto %} {{ text }} {% endblock texto %}
@@ -690,7 +702,7 @@ def example(request):
 
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/base.html}]
     {% include "global/partials/head.html" %}
 {% include "global/partials/menu.html" %}
         {% if text %}
@@ -709,8 +721,83 @@ def example(request):
         
     </body>
 </html>
+   
 \end{lstlisting}
 
+\section{Criando urls dinâmicas no Django  URL Dispatcher, view e template}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/urls.py}]
+from django.urls import path
+from blog.views import blog, example
+
+app_name = 'blog'
+urlpatterns = [
+    path('', blog, name='home'),
+    path('post/<id>', blog, name='post'),
+    path('example/', example, name='example')
+]
+
+\end{lstlisting}
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    from django.shortcuts import render
+    from . import data
+    # Create your views here.
+    def blog(request):
+        context = {
+            'text' : 'ola aqui do blog',
+            'posts' : data.posts
+        }
+        return render(request,
+                      'blog/blog.html', 
+                      context
+                      )
+    
+    def post(request, id):
+        print('post', id)
+        context = {
+            #'text' : 'ola aqui do blog',
+            'posts' : data.posts
+        }
+        return render(request,
+                      'blog/blog.html', 
+                      context
+                      )
+    
+    
+    def example(request):
+        context = {
+            'text' : 'Example'
+        }
+        return render(request, 
+                      'blog/example.html', 
+                      context
+                      )
+    
+\end{lstlisting}
+
+\textbf{Fazendo o reverse match}
+
+    \begin{lstlisting}[style=alteracoes_python, caption={Commit}]
+        <a href="{% url "blog:post" post.id %}">
+            {{post.title}}
+        </a>
+    \end{lstlisting}    
+
+
+
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/postblock.html}]
+    <article class="post">
+    <header>
+      <a href="{% url "blog:post" post.id %}">
+        {{post.title}}
+      </a>
+      <h2 class="post__title">Lorem ipsum dolor sit amet.{{post.title}}</h2>
+    </header>
+    <div class="post__body">{{post.body}}</div>
+  </article> 
+\end{lstlisting}
+
+\section{Usando a mesma url de forma estática e de forma dinâmica}
 
 
 \end{document}
@@ -722,12 +809,9 @@ def example(request):
 \begin{lstlisting}[style=cssStyle, caption={global/css/red.css}]
 \end{lstlisting}
 
-\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+\begin{lstlisting}[style=djangohtml, caption={base/global/partials/head.html}]
    
 \end{lstlisting}
-
-% source amb/Scripts/activate; cd aulas/ola_django
-% python manage.py runserver
 
 
 
