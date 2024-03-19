@@ -10,3 +10,6 @@
 *.toc
 !requirements.txt
 amb/ 
+aulas/ola_django/blog/
+aulas/ola_django/home
+base/

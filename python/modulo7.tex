@@ -1,53 +1,735 @@
 
-    \documentclass{article}
-    \usepackage[legalpaper, left=1 cm, right=1cm, top=0.5cm, bottom=0.5cm] {geometry}
-    \date{} % Remove a exibição da data
-    \usepackage{xcolor}
-    \usepackage{listings}
-    \usepackage{graphicx}
-    \usepackage{hyperref} % Para criar links
-    \usepackage[utf8]{inputenc}
-    \usepackage[T1]{fontenc}
+\documentclass{article}
+\usepackage[legalpaper, left=1 cm, right=1cm, top=0.5cm, bottom=0.5cm] {geometry}
+\date{} % Remove a exibição da data
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{hyperref} % Para criar links
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 
-    \lstset{
-    language=python,
-    basicstyle=\ttfamily,
-    keywordstyle=\bfseries\color{blue},
-    commentstyle=\color{blue},
-    stringstyle=\color{red!70!black},
-    numberstyle=\tiny,
-    stepnumber=1,
-    numbersep=5pt,
-    backgroundcolor=\color{white},
+\lstdefinestyle{pythonStyle}{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{blue}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{blue},
     breaklines=true,
-    breakautoindent=true,
-    showspaces=false,
     showstringspaces=false,
-    showtabs=false,
-    tabsize=2,
-    literate={~}{{\textasciitilde}}1, % Trata ~ como um caractere normal
-    extendedchars=true, % Permite caracteres estendidos (acentos, etc.)
-    inputencoding=utf8, % Define a codificação de entrada como UTF-8
-    literate={á}{{\'a}}1 {ã}{{\~a}}1 {ç}{{\c{c}}}1
+}
+
+% Define o estilo para HTML
+\lstdefinestyle{htmlStyle}{
+    language=HTML,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{red},
+    breaklines=true,
+    showstringspaces=false,
+}
+
+\lstdefinestyle{cssStyle}{
+    language=HTML,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{green!50!black},
+    commentstyle=\color{gray}\itshape,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    showstringspaces=false,
+}
+
+
+\title{Modulo 7}
+\begin{document}
+\maketitle
+\tableofcontents
+\section{introduction}
+\begin{lstlisting}[style=pythonStyle, caption={comandos django}]
+    django-admin  startproject project .# inicia o projeto django com o manage.py na raiz
+    python manage.py runserver #sobe o servidor
+\end{lstlisting}
+\textbf{http codes}
+\textcolor{red}{https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status}
+
+\section{
+    Primeira URL e function based view + HttpRequest e HttpResponse3
     }
-    \title{Modulo 7}
-    \begin{document}
-    \maketitle
-    \tableofcontents
-    \section{introduction}
-    \begin{lstlisting}
-        django-admin  startproject project .# inicia o projeto django com o manage.py na raiz
-        python manage.py runserver #sobe o servidor
-    \end{lstlisting}
-    \textbf{http codes}
-    \textcolor{red}{https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status#respostas_de_erro_do_cliente}
+
+\begin{lstlisting}[style=pythonStyle, caption={urls.py}]
+    def home (request):
+        print("home")
+        return HttpResponse("HOME")
+
+    def my_view(request):
+        return HttpResponse("hello world")
+
+
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+        path('blog/', my_view),
+        path('', home),
+    ]
+\end{lstlisting}
+
+\section{Movendo as functions base views para os novos Apps no Django}
+\textbf{comnandos}
+\begin{lstlisting}[style=pythonStyle, caption={comando django}] 
+django-admin startapp <nome_app> \end{lstlisting}
+
+Aqui ocorre o aninhamento das urls que estarão nos apps
+\begin{lstlisting}[style=pythonStyle, caption={project/urls.py}]
+    from django.contrib import admin
+    from django.urls import include ,path
+    urlpatterns = [
+        path('', include('home.urls')),
+        path('admin/', admin.site.urls),
+        path('blog/', include('blog.urls')),
+    ]
+\end{lstlisting}
+
+Aqui são as responses de cada urls
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    #from django.shortcuts import render
+    from django.http import HttpResponse
+
+    # Create your views here.
+    def blog(request):
+        return HttpResponse("BLOG")
+
+    def example(request):
+        return HttpResponse("BLOG/example")
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/urls.py}]
+    from django.urls import path
+    from blog.views import blog, example
+
+    urlpatterns = [
+        path('', blog),
+        path('example/', example)
+    ]
+\end{lstlisting}
+E a mesma coisa acontece para o home
+
+\begin{lstlisting}[style=pythonStyle, caption={home/views.py}]
+    from django.http import HttpResponse
+    #from django.shortcuts import render
+
+    # Create your views here.
+    def home (request):#function base view
+        print("home")
+        return HttpResponse("HOME")
+
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={home/urls.py}]
+    from django.urls import path
+    from home.views import home
+
+    urlpatterns = [
+        path('', home),
+    ]
+\end{lstlisting}
+
+\section{Renderizando HTML, render, templates, INSTALLEDAPPS e TemplateDoesNotExist}
+
+\begin{lstlisting}[style=pythonStyle, caption={project/settings.py}]
+    INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'home',
+    'blog',
+    ]#adicionando configuracoes dos apps
+\end{lstlisting}
+\textbf{um pasta com o nome do app, dentro da pasta templates, garante segurança na importação}
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <b> BLOG</b>
+    </html>
+\end{lstlisting}
+
+
+\begin{lstlisting}[style= htmlStyle, caption={blog/templates/blog/example.html}]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <strong>Example</strong>
+    </html>
+
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    from django.shortcuts import render
+
+    # Create your views here.
+    def blog(request):
+        return render(request,
+                    'blog.html')
+
+    def example(request):
+        return render(request, 
+                    'example.html')
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=htmlStyle, caption={home/templates/home/home.html}]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <strong>HOME</strong>
+    </html>
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=pythonStyle, caption={home/views.py}]
+    from django.shortcuts import render
+
+    # Create your views here.
+    def home (request):#function base view
+        print("home")
+        return render(
+            request,
+            'home.html'
+        )
+
+\end{lstlisting}
+
+\section{Configurando templates globais com DIRS + extends para herança de templates}
+
+
+\begin{lstlisting}[style=pythonStyle, caption={project/settings.py}]
+    # aqui estao as configuracoes dos templates usados no app
+    TEMPLATES = [
+{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [
+        \textcolor{blue}{BASE_DIR / 'base'}
+        ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug',
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+        ],
+    },
+},
+]
+\end{lstlisting}
+
+
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+       \textcolor{blue}{<h1> {% block texto  %} BASE {% endblock %}</h1>} 
+    </body>
+    </html>
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={home/views.py}]
+    from django.shortcuts import render
+    # Create your views here.
+    def home (request):#function base view
+        print("home")
+        return render(
+            request,
+            'home/home.html'
+        )
+
+\end{lstlisting}
+extends significa extender para o html da base
+
+\begin{lstlisting}[style=htmlStyle, caption={home/templates/home.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} MUDAR O texto{% endblock texto %}
+
+\end{lstlisting}
+
+\section{configurando templates globais}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <h1> {% block texto  %} BASE {% endblock %}</h1>
+    </body>
+    </html>
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={home/templates/home.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} MUDAR O texto{% endblock texto %}
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} bem vindo ao blog {% endblock texto %}
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/example.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} Example {% endblock texto %}
+\end{lstlisting}
+\section{Arquivos parciais e includes para separar trechos dos templates(partials)}
+\textbf{}
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+        <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+\end{lstlisting}
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/paragrafo.html}]
+    <p> um texto qualquer </p>
+\end{lstlisting}
+
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+    {% include "global/partials/head.html" %}
+    <h1> {% block texto  %} BASE {% endblock %}</h1>
+    {% include "global/partials/paragrafo.html" %}
+    {% include "global/partials/paragrafo.html" %}
+    {% include "global/partials/paragrafo.html" %}
+    {% include "global/partials/paragrafo.html" %}
+</body>
+</html>
+\end{lstlisting}
+
+\section{Arquivos estaticos (static files), STATICURL, STATICFILESDIRS,  load static}
+configurando o settings do project para uma nova pasta static em base
+\begin{lstlisting}[style=pythonStyle, caption={project/settings.py}]
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+    STATIC_URL = 'static/'
+    STATICFILES_DIRS = [
+        BASE_DIR / 'base'/ 'static'
+]
+\end{lstlisting}
+
+\begin{lstlisting}[style=cssStyle, caption={home/css/blue.css}]
+    body{
+        background: blue;
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[style=cssStyle, caption={global/css/red.css}]
+    body{
+        background: red;
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+    {% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel = "stylesheet" href = "{% static 'home/css/blue.css' %}">
+    <link rel = "stylesheet" href = "{% static 'global/css/red.css' %}">
+</head>
+\end{lstlisting}
+
+\section{Usando context para enviar dados para dentro do views}
+\begin{lstlisting}[style=htmlStyle, caption={home/templates/home/home.html}]
+{% extends "global/base.html" %}
+{% block texto %} 
+{{ text }}
+{% endblock texto %}
+   
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={home/views.py}]
+    from django.shortcuts import render
+
+    # Create your views here.
+    def home (request):#function base view
+        print("home")
+        context = {
+                'text' : 'estamos aqui'
+            }
     
-
-
+        return render(
+            request,
+            'home/home.html',
+            context
+        )
     
+\end{lstlisting}
 
-    \end{document}
-    \section{}
-    \begin{lstlisting}
-    \end{lstlisting}
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/example.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} {{ text }} {% endblock texto %}
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/example.html}]
+{% extends "global/base.html" %}
+{% block texto %} {{ text }} {% endblock texto %}  
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    from django.shortcuts import render
+
+# Create your views here.
+def blog(request):
+    context = {
+        'text' : 'ola aqui do blog'
+    }
+    return render(request,
+                  'blog/blog.html', 
+                  context
+                  )
+
+def example(request):
+    context = {
+        'text' : 'Example'
+    }
+    return render(request, 
+                  'blog/example.html', 
+                  context
+                  )
+
+\end{lstlisting}
+\section{trabalhando com urls dinamicas}
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/menu.html}]
+    <nav> 
+    <ul>
+        <li>
+            <a href= "{% url 'home:index'%}">Home</a>
+        </li>   
+        
+        <li>
+            <a href= "{% url 'blog:home'%}">Blog</a>
+        </li>   
+
+        <li>
+            <a href= "{% url 'blog:example'%}">Example</a>
+        </li>   
+    </ul>    
+</nav>
+   
+\end{lstlisting}
+
+
+
+Adicionando namespace a url
+\begin{lstlisting}[style=pythonStyle, caption={blog/urls.py}]
+from django.urls import path
+from blog.views import blog, example
+
+app_name = 'blog'
+urlpatterns = [
+    path('', blog, name='home'),
+    path('example/', example, name='example')
+]
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={home/urls.py}]
+from django.urls import path
+from home.views import home
+
+app_name = 'home'
+urlpatterns = [
+    path('', home, name= 'index'),
+]
+\end{lstlisting}
+
+\section{Movendo todos os arquivos de css para global}
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+    {% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} Site do Marcos </title>
+    <link rel="stylesheet" href="{% static 'global/css/style.css' %}">
+</head>
+\end{lstlisting}   
+
+\begin{lstlisting}[style=cssStyle, caption={base/static/global/css/style.css}]
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box; 
+    }    
+
+\end{lstlisting}
+\section{Criando o partial postblock.html e usando include}
+\begin{lstlisting}[style=cssStyle, caption={base/static/global/css/style.css}]
+    /* Reset */
+*,
+*:after,
+*:before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  background: #f1f1f1;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+{% include "global/partials/head.html" %}
+{% include "global/partials/menu.html" %}
+
+        <h1> {% block texto  %} BASE {% endblock %}</h1>
+        {% include "global/partials/paragrafo.html" %}
+        {% include "global/partials/paragrafo.html" %}
+
+        <main class="posts">
+            {% include "global/partials/postblock.html" %}
+            {% include "global/partials/postblock.html" %}
+            {% include "global/partials/postblock.html" %}
+        
+
+        </main>
+        
+        
+        
+    </body>
+</html>
+   
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/postblock.html}]
+    <article>
+    <header>
+        <h2 class="post__title">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus placeat blanditiis ipsam quas est, provident, exercitationem illo inventore molestias iure beatae soluta aliquid iusto facere corporis, quaerat aspernatur debitis laudantium?
+        </h2>
+    </header>
+    <div class="post__body">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum laboriosam beatae veritatis dolorem natus voluptatibus fugiat sequi eaque exercitationem dolor nobis assumenda facere, praesentium aspernatur id odit aliquam ipsa nisi.
+    </div>
+</article>
+
+   
+\end{lstlisting}
+
+\section{usando block para criar blocos de posts e home }
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+    {% include "global/partials/head.html" %}
+    {% include "global/partials/menu.html" %}
+    
+            <h1> {% block texto  %} BASE {% endblock %}</h1>
+            {% include "global/partials/paragrafo.html" %}
+            {% include "global/partials/paragrafo.html" %}
+    
+            <main class="content">
+                {% block posts  %} {% endblock %}
+                {% block home  %}{% endblock home  %}
+                
+            </main>
+            
+            
+            
+        </body>
+    </html>
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+    {% extends "global/base.html" %}
+    {% block texto %} {{text}} {% endblock texto %}
+    {% block posts %}
+    
+    {% include "global/partials/postblock.html" %}
+    {% endblock posts %}
+    
+    {% block home %}
+    <h1> Blog </h1>
+    {% endblock home %}
+    
+\end{lstlisting}
+
+\section{Entendendo seu HTML final + adiconando css aos posts}
+\textbf{.content altera os content da pagina html\\}
+\textbf{.post altera diretamente os posts\\}
+\textbf{@media altera o formato das caixas de posts}
+\begin{lstlisting}[style=cssStyle, caption={base/static/global/css/style.css}]
+    
+.content {
+    display: grid;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .post{
+    background : #fff;
+    padding: 1.5rem;
+    box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.9)
+  }
+  
+  @media (min-width: 600px){
+    .content{
+      grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
+    }
+  }
+  
+\end{lstlisting}
+
+\section{Criando os dados de posts (data.py) e usando loop for no template}
+\textbf{O codigo do data.py foi criado apartir de dados de uma api que usa json.}\\
+\textbf{O codigo foi modificado pra que apartir dos dados do data.py, gere na pagina blog, os diversos posts.}
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/postblock.htmll}]
+    <article class="post">
+    <header>
+      <h2 class="post__title">Lorem ipsum dolor sit amet.{{post.title}}</h2>
+    </header>
+    <div class="post__body">{{post.body}}</div>
+  </article>
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={blog/templates/blog/blog.html}]
+{% extends 'global/base.html' %}
+
+{% block texto %} {{ text }} {% endblock texto %}
+
+{% block posts %}
+{% for post  in posts  %}
+{% include 'global/partials/postblock.html' %}
+{% endfor %}
+{% endblock posts %} 
+\end{lstlisting}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    def blog(request):
+    context = {
+        'text' : 'ola aqui do blog',
+        'posts' : data.posts
+    }
+    return render(request,
+                  'blog/blog.html', 
+                  context
+                  )
+
+\end{lstlisting}
+
+\section{Usando if, elif, e else dentro do template}
+\textbf{No exemplo passado em aula, o if é usado para checar a existencia da da variavel text, se não existir ela nao aparece na pagina html}
+
+\begin{lstlisting}[style=pythonStyle, caption={blog/views.py}]
+    from django.shortcuts import render
+from . import data
+# Create your views here.
+def blog(request):
+    context = {
+        'text' : 'ola aqui do blog',
+        'posts' : data.posts
+    }
+    return render(request,
+                  'blog/blog.html', 
+                  context
+                  )
+
+def example(request):
+    context = {
+        'text' : 'Example'
+    }
+    return render(request, 
+                  'blog/example.html', 
+                  context
+                  )
+
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/base.html}]
+    {% include "global/partials/head.html" %}
+{% include "global/partials/menu.html" %}
+        {% if text %}
+        <h1> {% block texto  %} BASE {% endblock %}</h1>
+        {% endif %}
+        
+        {% include "global/partials/paragrafo.html" %}
+        {% include "global/partials/paragrafo.html" %}
+
+        <main class="content">
+            {% block posts  %}{% endblock posts %}
+            {% block home  %}{% endblock home  %}  
+        </main>
+        
+        
+        
+    </body>
+</html>
+\end{lstlisting}
+
+
+
+\end{document}
+\section{}
+
+\begin{lstlisting}[style=pythonStyle, caption={Exemplo em Python}]
+\end{lstlisting}
+
+\begin{lstlisting}[style=cssStyle, caption={global/css/red.css}]
+\end{lstlisting}
+
+\begin{lstlisting}[style=htmlStyle, caption={base/global/partials/head.html}]
+   
+\end{lstlisting}
+
+% source amb/Scripts/activate; cd aulas/ola_django
+% python manage.py runserver
+
+
+
+
 
